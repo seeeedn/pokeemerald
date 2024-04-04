@@ -119,6 +119,7 @@ static void DoSwitchOutAnimation(void);
 static void PlayerDoMoveAnimation(void);
 static void Task_StartSendOutAnim(u8);
 static void EndDrawPartyStatusSummary(void);
+static void MoveSelectionDisplaySplitIcon(void);
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(void) =
 {
@@ -185,6 +186,15 @@ static const u8 sTargetIdentities[MAX_BATTLERS_COUNT] = {B_POSITION_PLAYER_LEFT,
 
 // unknown unused data
 static const u8 sUnused[] = {0x48, 0x48, 0x20, 0x5a, 0x50, 0x50, 0x50, 0x58};
+
+// Icons for Physical/Special-Split
+static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/split_icons_battle.gbapal"); 
+static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/split_icons_battle.4bpp");
+
+/* 
+static const u16 testPal[] = INCBIN_U16("graphics/types/move_types_1.gbapal");
+static const u8 testGfx[] = INCBIN_U8("graphics/types/bug.4bpp"); 
+*/
 
 void BattleControllerDummy(void)
 {
@@ -1493,6 +1503,20 @@ static void MoveSelectionDisplayPpNumber(void)
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP_REMAINING);
 }
 
+/* static void MoveSelectionDisplayMoveType(void)
+{
+    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
+    u32 moveCategory;
+
+	moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][MAX_BATTLERS_COUNT]);
+    moveCategory = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
+    LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+	BlitBitmapToWindow(B_WIN_MOVE_TYPE, testGfx, 16, 0, 32, 16);
+	PutWindowTilemap(B_WIN_MOVE_TYPE);
+	CopyWindowToVram(B_WIN_MOVE_TYPE, 3);
+    MoveSelectionDisplaySplitIcon();
+} */
+
 static void MoveSelectionDisplayMoveType(void)
 {
     u8 *txtPtr;
@@ -1503,8 +1527,28 @@ static void MoveSelectionDisplayMoveType(void)
     *(txtPtr)++ = EXT_CTRL_CODE_FONT;
     *(txtPtr)++ = FONT_NORMAL;
 
-    StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+    if (moveInfo->moves[gMoveSelectionCursor[gActiveBattler]] == MOVE_HIDDEN_POWER)
+    {
+        u8 typeBits  = ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_HP_IV) & 1) << 0)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_ATK_IV) & 1) << 1)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_DEF_IV) & 1) << 2)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPEED_IV) & 1) << 3)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPATK_IV) & 1) << 4)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPDEF_IV) & 1) << 5);
+
+        u8 type = (15 * typeBits) / 63 + 1;
+        if (type >= TYPE_MYSTERY)
+            type++;
+        type |= 0xC0;
+        StringCopy(txtPtr, gTypeNames[type & 0x3F]);
+    }
+    else
+    {
+        StringCopy(txtPtr, gTypeNames[gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type]);
+    }
+
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+    MoveSelectionDisplaySplitIcon();
 }
 
 static void MoveSelectionCreateCursorAt(u8 cursorPosition, u8 baseTileNum)
@@ -3144,4 +3188,17 @@ static void PlayerHandleEndLinkBattle(void)
 
 static void PlayerCmdEnd(void)
 {
+}
+
+static void MoveSelectionDisplaySplitIcon(void)
+{
+	struct ChooseMoveStruct *moveInfo;
+	u32 moveCategory;
+
+	moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][MAX_BATTLERS_COUNT]);
+    moveCategory = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].category;
+	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+	BlitBitmapToWindow(B_WIN_PSS_ICON, sSplitIcons_Gfx + 0x80 * moveCategory, 0, 0, 16, 16);
+	PutWindowTilemap(B_WIN_PSS_ICON);
+	CopyWindowToVram(B_WIN_PSS_ICON, 3);
 }
