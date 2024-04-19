@@ -4643,4 +4643,16 @@ const struct PokedexEntry gPokedexEntries[] =
         .trainerScale = 290,
         .trainerOffset = 2,
     },
+    
+    [NATIONAL_DEX_ZEKROM] =
+    {
+        .categoryName = _("DEEP BLACK"),
+        .height = 29,
+        .weight = 345,
+        .description = gZekromPokedexText,
+        .pokemonScale = 256,
+        .pokemonOffset = 0,
+        .trainerScale = 290,
+        .trainerOffset = 2,
+    }
 };

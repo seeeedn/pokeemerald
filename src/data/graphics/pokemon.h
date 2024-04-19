@@ -2698,6 +2698,13 @@ const u8 gMonIcon_Deoxys[] = INCBIN_U8("graphics/pokemon/deoxys/icon.4bpp");
 const u8 gMonIcon_DeoxysSpeed[] = INCBIN_U8("graphics/pokemon/deoxys/icon_speed.4bpp");
 const u8 gMonIcon_DeoxysSpeedWide[] = INCBIN_U8("graphics/pokemon/deoxys/icon_speed_wide.4bpp"); // Unused
 
+const u32 gMonStillFrontPic_Zekrom[] = INCBIN_U32("graphics/pokemon/zekrom/front.4bpp.lz");
+const u32 gMonPalette_Zekrom[] = INCBIN_U32("graphics/pokemon/zekrom/normal.gbapal.lz");
+const u32 gMonBackPic_Zekrom[] = INCBIN_U32("graphics/pokemon/zekrom/back.4bpp.lz");
+const u32 gMonShinyPalette_Zekrom[] = INCBIN_U32("graphics/pokemon/zekrom/shiny.gbapal.lz");
+const u8 gMonIcon_Zekrom[] = INCBIN_U8("graphics/pokemon/zekrom/icon.4bpp");
+const u8 gMonFootprint_Zekrom[] = INCBIN_U8("graphics/pokemon/zekrom/footprint.1bpp");
+
 // Probably the leftover space from the other Deoxys forms
 static const u8 sEmpty[0x6800] = {0};
 

@@ -2152,6 +2152,9 @@ const u8 gChimechoPokedexText[] = _(
     "themselves using seven different and\n"
     "distinguishing cries.");
 
+const u8 gZekromPokedexText[] = _(
+    "test");
+
 const u8 gAbsolPokedexText[] = _(
     "It sharply senses even subtle changes in\n"
     "the sky and the land to predict natural\n"

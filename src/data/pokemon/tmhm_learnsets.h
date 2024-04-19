@@ -10180,4 +10180,8 @@ const union {
         .FLASH = TRUE,
     } },
 
+    [SPECIES_ZEKROM] = { .learnset = {
+        .CALM_MIND = TRUE,
+    } },
+
 };
