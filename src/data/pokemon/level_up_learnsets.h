@@ -5618,5 +5618,7 @@ static const u16 sChimechoLevelUpLearnset[] = {
 
 static const u16 sZekromLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_THUNDER_PUNCH),
+    LEVEL_UP_MOVE( 1 ,MOVE_THUNDER_WAVE),
+    LEVEL_UP_MOVE( 1, MOVE_THUNDER_SHOCK),
     LEVEL_UP_END
 };
