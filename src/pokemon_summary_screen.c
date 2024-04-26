@@ -80,7 +80,7 @@ enum {
 // Moves screen
 #define PSS_LABEL_WINDOW_MOVES_POWER_ACC 14 // Also contains the power and accuracy values
 #define PSS_LABEL_WINDOW_MOVES_APPEAL_JAM 15
-#define PSS_LABEL_WINDOW_UNUSED2 16
+#define PSS_LABEL_WINDOW_MOVES_CATEGORY 16
 
 // Above/below the pokemon's portrait (left)
 #define PSS_LABEL_WINDOW_PORTRAIT_DEX_NUMBER 17
@@ -312,6 +312,11 @@ static void SetMainMoveSelectorColor(u8);
 static void KeepMoveSelectorVisible(u8);
 static void SummaryScreen_DestroyAnimDelayTask(void);
 static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n);
+static void MoveDisplaySplitIcon(u16 moveIndex);
+
+// Icons for Physical/Special-Split
+static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/split_icons_battle.gbapal"); 
+static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/split_icons_battle.4bpp");
 
 // const rom data
 #include "data/text/move_descriptions.h"
@@ -531,14 +536,14 @@ static const struct WindowTemplate sSummaryTemplate[] =
         .paletteNum = 6,
         .baseBlock = 367,
     },
-    [PSS_LABEL_WINDOW_UNUSED2] = {
+    [PSS_LABEL_WINDOW_MOVES_CATEGORY] = {
         .bg = 0,
-        .tilemapLeft = 22,
-        .tilemapTop = 4,
-        .width = 0,
+        .tilemapLeft = 5,
+        .tilemapTop = 15,
+        .width = 2,
         .height = 2,
-        .paletteNum = 6,
-        .baseBlock = 387,
+        .paletteNum = 10,
+        .baseBlock = 660,
     },
     [PSS_LABEL_WINDOW_PORTRAIT_DEX_NUMBER] = {
         .bg = 0,
@@ -1986,6 +1991,7 @@ static void ChangeSelectedMove(s16 *taskData, s8 direction, u8 *moveIndexPtr)
     {
         ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
         ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM);
+        ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
         ScheduleBgCopyTilemapToVram(0);
         HandlePowerAccTilemap(0, 3);
         HandleAppealJamTilemap(0, 3, 0);
@@ -2012,6 +2018,7 @@ static void CloseMoveSelectMode(u8 taskId)
     {
         ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
         ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM);
+        ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
         HandlePowerAccTilemap(0, 3);
         HandleAppealJamTilemap(0, 3, 0);
     }
@@ -2238,6 +2245,7 @@ static void ShowCantForgetHMsWindow(u8 taskId)
 {
     ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
     ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM);
+    ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
     ScheduleBgCopyTilemapToVram(0);
     HandlePowerAccTilemap(0, 3);
     HandleAppealJamTilemap(0, 3, 0);
@@ -2444,7 +2452,11 @@ static void Task_ShowPowerAccWindow(u8 taskId)
         if (data[0] < 0)
         {
             if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
+            {
                 PutWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
+                PutWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
+            }
+
         }
         else
         {
@@ -2886,7 +2898,10 @@ static void PutPageWindowTilemaps(u8 page)
         if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
         {
             if (sMonSummaryScreen->newMove != MOVE_NONE || sMonSummaryScreen->firstMoveIndex != MAX_MON_MOVES)
+            {
                 PutWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
+                PutWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
+            }
         }
         else
         {
@@ -2934,7 +2949,10 @@ static void ClearPageWindowTilemaps(u8 page)
         if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
         {
             if (sMonSummaryScreen->newMove != MOVE_NONE || sMonSummaryScreen->firstMoveIndex != MAX_MON_MOVES)
+            {
                 ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_POWER_ACC);
+                ClearWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
+            }
         }
         else
         {
@@ -3532,7 +3550,11 @@ static void PrintMovePowerAndAccuracy(u16 moveIndex)
     u8 monFriendship = GetMonData(&gPlayerParty[sMonSummaryScreen->curMonIndex], MON_DATA_FRIENDSHIP);
     if (moveIndex != 0)
     {
+        u16 moveCategory = gBattleMoves[moveIndex].category;
         FillWindowPixelRect(PSS_LABEL_WINDOW_MOVES_POWER_ACC, PIXEL_FILL(0), 53, 0, 19, 32);
+        LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+        BlitBitmapToWindow(PSS_LABEL_WINDOW_MOVES_CATEGORY, sSplitIcons_Gfx + 0x80 * moveCategory, 0, 0, 16, 16);
+        //MoveDisplaySplitIcon(moveIndex);
 
         if (moveIndex == MOVE_RETURN)
         {
@@ -4176,4 +4198,14 @@ static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n)
 
     ConvertIntToDecimalStringN(txtPtr, stat, STR_CONV_MODE_RIGHT_ALIGN, n);
     DynamicPlaceholderTextUtil_SetPlaceholderPtr(strId, dst);
+}
+
+static void MoveDisplaySplitIcon(u16 moveIndex)
+{
+    u16 moveCategory = gBattleMoves[moveIndex].category;
+
+	LoadPalette(sSplitIcons_Pal, 10 * 0x10, 0x20);
+	BlitBitmapToWindow(PSS_LABEL_WINDOW_MOVES_CATEGORY, sSplitIcons_Gfx + 0x80 * moveCategory, 0, 0, 16, 16);
+	PutWindowTilemap(PSS_LABEL_WINDOW_MOVES_CATEGORY);
+	CopyWindowToVram(PSS_LABEL_WINDOW_MOVES_CATEGORY, 3);
 }
