@@ -1740,6 +1740,7 @@ static void Cmd_adjustnormaldamage2(void)
     {
         RecordAbilityBattle(gBattlerTarget, ABILITY_STURDY);
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
+        gBattlescriptCurrInstr = BattleScript_SturdyActivates;
     }
 
     if (!(gBattleMons[gBattlerTarget].status2 & STATUS2_SUBSTITUTE)
