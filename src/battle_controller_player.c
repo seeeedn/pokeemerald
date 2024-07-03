@@ -188,14 +188,15 @@ static const u8 sTargetIdentities[MAX_BATTLERS_COUNT] = {B_POSITION_PLAYER_LEFT,
 // unknown unused data
 static const u8 sUnused[] = {0x48, 0x48, 0x20, 0x5a, 0x50, 0x50, 0x50, 0x58};
 
-// Icons for Physical/Special-Split
+// Icons & Palette for Physical/Special-Split
 static const u16 sSplitIcons_Pal[] = INCBIN_U16("graphics/battle_interface/split_icons_battle.gbapal"); 
 static const u8 sSplitIcons_Gfx[] = INCBIN_U8("graphics/battle_interface/split_icons_battle.4bpp");
 
-// Icons for move types
-static const u16 testPal[] = INCBIN_U16("graphics/types/move_types_3.gbapal");
-static const u8 testGfx[] = INCBIN_U8("graphics/types/bug.4bpp"); 
-
+// Icons & Palettes for move types
+static const u16 move_Pal1[] = INCBIN_U16("graphics/types/move_types_1.gbapal");
+static const u16 move_Pal2[] = INCBIN_U16("graphics/types/move_types_2.gbapal");
+static const u16 move_Pal3[] = INCBIN_U16("graphics/types/move_types_3.gbapal");
+static const u8 types_Gfx[] = INCBIN_U8("graphics/types/types.4bpp");
 
 void BattleControllerDummy(void)
 {
@@ -3206,8 +3207,26 @@ static void MoveSelectionDisplayTypeIcon(void)
 
     moveInfo = (struct ChooseMoveStruct*)(&gBattleBufferA[gActiveBattler][MAX_BATTLERS_COUNT]);
     moveType = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
-    LoadPalette(testPal, 11 * 0x10, 0x20);
-    BlitBitmapToWindow(B_WIN_MOVE_TYPE, testGfx, 0, 0, 32, 16);
+    
+    switch (moveType)
+    {
+    case TYPE_DARK: case TYPE_FIRE: case TYPE_ELECTRIC: case TYPE_FIGHTING: case TYPE_GROUND: case TYPE_NORMAL: case TYPE_ROCK: case TYPE_STEEL:
+        LoadPalette(move_Pal1, 11 * 0x10, 0x20);
+        break;
+    
+    case TYPE_FAIRY: case TYPE_PSYCHIC: case TYPE_FLYING: case TYPE_GHOST: case TYPE_ICE: case TYPE_POISON: case TYPE_WATER:
+        LoadPalette(move_Pal2, 11 * 0x10, 0x20);
+        break;
+
+    case TYPE_BUG: case TYPE_DRAGON: case TYPE_GRASS: case TYPE_MYSTERY:
+        LoadPalette(move_Pal3, 11 * 0x10, 0x20);
+        break;
+
+    default:
+        break;
+    }
+
+    BlitBitmapToWindow(B_WIN_MOVE_TYPE, types_Gfx + 0x100 * moveType, 0, 0, 32, 16);
 	PutWindowTilemap(B_WIN_MOVE_TYPE);
 	CopyWindowToVram(B_WIN_MOVE_TYPE, 3);
 }
