@@ -424,8 +424,7 @@ static const u8 sText_SpAtk2[] = _("SP. ATK");
 static const u8 sText_SpDef2[] = _("SP. DEF");
 static const u8 sText_Accuracy[] = _("accuracy");
 static const u8 sText_Evasiveness[] = _("evasiveness");
-
-static const u8 sText_SturdyActivated[] = _("Sturdy activated!");
+static const u8 sText_SturdyActivated[] = _("{B_DEF_NAME_WITH_PREFIX} endured\nthe hit using {B_DEF_ABILITY}!");
 
 const u8 * const gStatNamesTable[NUM_BATTLE_STATS] =
 {

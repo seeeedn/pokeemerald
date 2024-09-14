@@ -4077,12 +4077,11 @@ BattleScript_SturdyPreventsOHKO::
 	pause B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
-BattleScript_SturdyActivates::
+BattleScript_SturdiedMsg::
 	pause B_WAIT_TIME_SHORT
-	//call BattleScript_AbilityPopUpTarget
 	printstring STRINGID_STURDYACTIVATED
 	waitmessage B_WAIT_TIME_LONG
-	//return
+	return
 
 BattleScript_DampStopsExplosion::
 	pause B_WAIT_TIME_SHORT
@@ -4407,11 +4406,6 @@ BattleScript_FocusBandActivates::
 	printstring STRINGID_PKMNHUNGONWITHX
 	waitmessage B_WAIT_TIME_LONG
 	return
-
-//BattleScript_SturdyActivates::
-	//printstring STRINGID_PKMNPROTECTEDBY
-	//waitmessage B_WAIT_TIME_LONG
-	//return
 
 BattleScript_BerryConfuseHealEnd2::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
