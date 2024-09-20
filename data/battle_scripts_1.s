@@ -4077,7 +4077,7 @@ BattleScript_SturdyPreventsOHKO::
 	pause B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
 
-BattleScript_SturdiedMsg::
+BattleScript_SturdyActivates::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_STURDYACTIVATED
 	waitmessage B_WAIT_TIME_LONG

@@ -1691,22 +1691,22 @@ static void Cmd_adjustnormaldamage(void)
      && gBattleMons[gBattlerTarget].hp <= gBattleMoveDamage)
     {
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
-    }
 
-    if (gProtectStructs[gBattlerTarget].endured)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_ENDURED;
-    }
-    else if (gSpecialStatuses[gBattlerTarget].focusBanded)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_HUNG_ON;
-        gLastUsedItem = gBattleMons[gBattlerTarget].item;
-        gSpecialStatuses[gBattlerTarget].focusBanded = FALSE;
-    }
-    else if (gSpecialStatuses[gBattlerTarget].sturdied)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_STURDIED;
-        gLastUsedAbility = ABILITY_STURDY;
+        if (gProtectStructs[gBattlerTarget].endured)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_ENDURED;
+        }
+        else if (gSpecialStatuses[gBattlerTarget].focusBanded)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_HUNG_ON;
+            gLastUsedItem = gBattleMons[gBattlerTarget].item;
+            gSpecialStatuses[gBattlerTarget].focusBanded = FALSE;
+        }
+        else if (gSpecialStatuses[gBattlerTarget].sturdied)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_STURDIED;
+            gLastUsedAbility = ABILITY_STURDY;
+        }
     }
     gBattlescriptCurrInstr++;
 }
