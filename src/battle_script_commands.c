@@ -1687,26 +1687,26 @@ static void Cmd_adjustnormaldamage(void)
     }
 
     if (!(gBattleMons[gBattlerTarget].status2 & STATUS2_SUBSTITUTE)
-     && (gBattleMoves[gCurrentMove].effect == EFFECT_FALSE_SWIPE || gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded || gSpecialStatuses[gBattlerTarget].sturdyActivated)
+     && (gBattleMoves[gCurrentMove].effect == EFFECT_FALSE_SWIPE || gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded || gSpecialStatuses[gBattlerTarget].sturdied)
      && gBattleMons[gBattlerTarget].hp <= gBattleMoveDamage)
     {
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
-    }
 
-    if (gProtectStructs[gBattlerTarget].endured)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_ENDURED;
-    }
-    else if (gSpecialStatuses[gBattlerTarget].focusBanded)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_HUNG_ON;
-        gLastUsedItem = gBattleMons[gBattlerTarget].item;
-        gSpecialStatuses[gBattlerTarget].focusBanded = FALSE;
-    }
-    else if (gSpecialStatuses[gBattlerTarget].sturdied)
-    {
-        gMoveResultFlags |= MOVE_RESULT_FOE_STURDIED;
-        gLastUsedAbility = ABILITY_STURDY;
+        if (gProtectStructs[gBattlerTarget].endured)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_ENDURED;
+        }
+        else if (gSpecialStatuses[gBattlerTarget].focusBanded)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_HUNG_ON;
+            gLastUsedItem = gBattleMons[gBattlerTarget].item;
+            gSpecialStatuses[gBattlerTarget].focusBanded = FALSE;
+        }
+        else if (gSpecialStatuses[gBattlerTarget].sturdied)
+        {
+            gMoveResultFlags |= MOVE_RESULT_FOE_STURDIED;
+            gLastUsedAbility = ABILITY_STURDY;
+        }
     }
     gBattlescriptCurrInstr++;
 }
@@ -2129,7 +2129,7 @@ static void Cmd_resultmessage(void)
                 gMoveResultFlags &= ~(MOVE_RESULT_FOE_STURDIED | MOVE_RESULT_FOE_ENDURED | MOVE_RESULT_FOE_HUNG_ON);
                 gSpecialStatuses[gBattlerTarget].sturdied = FALSE;
                 BattleScriptPushCursor();
-                gBattlescriptCurrInstr = BattleScript_SturdiedMsg;
+                gBattlescriptCurrInstr = BattleScript_SturdyActivates;
                 return;
             }
             else if (gMoveResultFlags & MOVE_RESULT_FOE_ENDURED)
