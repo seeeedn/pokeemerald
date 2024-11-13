@@ -1687,7 +1687,7 @@ static void Cmd_adjustnormaldamage(void)
     }
 
     if (!(gBattleMons[gBattlerTarget].status2 & STATUS2_SUBSTITUTE)
-     && (gBattleMoves[gCurrentMove].effect == EFFECT_FALSE_SWIPE || gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded || gSpecialStatuses[gBattlerTarget].sturdyActivated)
+     && (gBattleMoves[gCurrentMove].effect == EFFECT_FALSE_SWIPE || gProtectStructs[gBattlerTarget].endured || gSpecialStatuses[gBattlerTarget].focusBanded || gSpecialStatuses[gBattlerTarget].sturdied)
      && gBattleMons[gBattlerTarget].hp <= gBattleMoveDamage)
     {
         gBattleMoveDamage = gBattleMons[gBattlerTarget].hp - 1;
@@ -2129,7 +2129,7 @@ static void Cmd_resultmessage(void)
                 gMoveResultFlags &= ~(MOVE_RESULT_FOE_STURDIED | MOVE_RESULT_FOE_ENDURED | MOVE_RESULT_FOE_HUNG_ON);
                 gSpecialStatuses[gBattlerTarget].sturdied = FALSE;
                 BattleScriptPushCursor();
-                gBattlescriptCurrInstr = BattleScript_SturdiedMsg;
+                gBattlescriptCurrInstr = BattleScript_SturdyActivates;
                 return;
             }
             else if (gMoveResultFlags & MOVE_RESULT_FOE_ENDURED)
